@@ -3,7 +3,37 @@ import psycopg2;
 import ujson
 import json_merge_patch as jsonmp
 import pprint
+import contextlib
 
+def get_changes(full_document_id, number_of_versions=1):
+    with psycopg2.connect('dbname=docstore') as conn:
+        cur = conn.cursor()
+        cur.execute("""
+          SELECT difference_document
+            FROM staging_document_store.difference_document dd,
+                 staging_document_store.full_document fd
+           WHERE dd.full_document_id=fd.full_document_id AND
+                 dd.full_document_id=%(full_document_id)s
+        ORDER BY dd.difference_document_id DESC
+           LIMIT %(number_of_versions)s
+        """, {"full_document_id": full_document_id,
+              "number_of_versions": number_of_versions})
+        return cur
+
+
+
+@contextlib.contextmanager
+def iterate_diffs(document_id):
+    with psycopg2.connect('dbname=docstore') as conn:
+        curs = conn.cursor()
+        curs.execute("""
+        SET search_path=staging_document_store;
+        SELECT difference_document
+        FROM difference_document
+        WHERE full_document_id=%s
+        ORDER BY update_time DESC
+        """, (document_id,))
+        yield curs.fetchall()
 
 def store_document(document):
     with psycopg2.connect('dbname=docstore') as conn:
@@ -21,18 +51,18 @@ def store_document(document):
 def update_document(document_id, new_document):
     with psycopg2.connect('dbname=docstore') as conn:
         curs = conn.cursor()
-        
+
         curs.execute("""
         SET search_path=staging_document_store;
-        SELECT full_document 
+        SELECT full_document
         FROM full_document
         WHERE full_document_id=%s
         """, (document_id,))
         current_document = curs.fetchone()[0]
-        
+
         curs.execute("""
         SET search_path=staging_document_store;
-        UPDATE full_document 
+        UPDATE full_document
         SET full_document=%s
         """, (ujson.dumps(new_document),))
 
@@ -42,7 +72,7 @@ def update_document(document_id, new_document):
         INSERT INTO difference_document (full_document_id, difference_document)
         VALUES (%s, %s)
         """, (document_id, ujson.dumps(difference_document)))
-        
+
         return difference_document
 
 class DocStoreTest(unittest.TestCase):
@@ -51,10 +81,13 @@ class DocStoreTest(unittest.TestCase):
                               "rhythm_guitar": "James Iha",
                               "bass": "Matt McJunkins",
                               "drums":  "Jeff Friedl" }
-    
+
     test_document_removal = { "lead_guitar":"Billy Howerdel",
                               "bass": "Matt McJunkins",
                               "drums":  "Jeff Friedl" }
+
+    test_document_removal_2 = { "lead_guitar":"Billy Howerdel",
+                                "drums":  "Jeff Friedl" }
 
 
     test_document_addition = { "lead_guitar":"Billy Howerdel",
@@ -62,31 +95,44 @@ class DocStoreTest(unittest.TestCase):
                                "bass": "Matt McJunkins",
                                "backing_vocals": "Jeordie White",
                                "drums":  "Jeff Friedl" }
-    
-
 
     def setUp(self):
         with psycopg2.connect('dbname=docstore') as conn:
             cur = conn.cursor()
             cur.execute("TRUNCATE staging_document_store.full_document CASCADE");
-            
-    def test_doc_store(self):
-        doc_id = store_document(self.test_document_current)
-        
+            cur.execute("TRUNCATE staging_document_store.difference_document CASCADE");
+
+    # def test_doc_store(self):
+    #     expected =  {"bass": "Matt McJunkins",
+    #                  "drums": "Jeff Friedl",
+    #                  "lead_guitar": "Billy Howerdel",
+    #                  "rhythm_guitar": "James Iha"}
+    #     doc_id = store_document(self.test_document_current)
+
+
     def test_diff_store_removal(self):
         doc_id = store_document(self.test_document_current)
-        doc_id = update_document(doc_id, self.test_document_removal)
-        
+        update_document(doc_id, self.test_document_removal)
+        update_document(doc_id, self.test_document_removal_2)
 
-    def test_diff_store_addition(self):
-        doc_id = store_document(self.test_document_current)
-        doc_id = update_document(doc_id, self.test_document_addition)
+        expected_total_diffs = [({u'bass': u'Matt McJunkins'},),
+                                ({u'rhythm_guitar': u'James Iha'},)]
+        answer1 = list(get_changes(doc_id, None))
+        self.assertEquals(expected_total_diffs, answer1)
+
+        expected_diffs = [({u'bass': u'Matt McJunkins'},)]
+        answer2 = list(get_changes(doc_id, 1))
+        self.assertEquals(expected_diffs, answer2)
+
+    # def test_diff_store_addition(self):
+    #     doc_id = store_document(self.test_document_current)
+    #     doc_id = update_document(doc_id, self.test_document_addition)
 
 
-    def test_diff_store_removal_addition(self):
-        doc_id = store_document(self.test_document_current)
-        doc_id = update_document(doc_id, self.test_document_removal)
-        doc_id = update_document(doc_id, self.test_document_addition)
-        
-
-        
+    # def test_diff_store_removal_addition(self):
+    #     doc_id = store_document(self.test_document_current)
+    #     doc_diff1 = update_document(doc_id, self.test_document_removal)
+    #     doc_diff2 = update_document(doc_id, self.test_document_addition)
+    #     with iterate_diffs(doc_id) as vals:
+    #         for v in vals:
+    #             print v
