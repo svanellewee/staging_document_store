@@ -5,6 +5,7 @@ import json_merge_patch as jsonmp
 import pprint
 import contextlib
 
+
 def get_changes(full_document_id, number_of_versions=1):
     with psycopg2.connect('dbname=docstore') as conn:
         cur = conn.cursor()
@@ -21,6 +22,23 @@ def get_changes(full_document_id, number_of_versions=1):
         return cur
 
 
+def get_full_document(full_document_id):
+    with psycopg2.connect('dbname=docstore') as conn:
+        cur = conn.cursor()
+        cur.execute("""
+          SELECT full_document
+            FROM staging_document_store.full_document fd
+        WHERE fd.full_document_id=%(full_document_id)s
+        """, {"full_document_id": full_document_id})
+        return cur.fetchone()[0]
+
+def get_document(full_document_id, number_of_versions=1):
+    changes = get_changes(full_document_id=full_document_id,
+                          number_of_versions=number_of_versions)
+    document = get_full_document(full_document_id)
+    def apply_changes(total, current):
+        return jsonmp.merge(current, total)
+    return reduce(apply_changes, [i[0] for i in changes.fetchall()], document)
 
 @contextlib.contextmanager
 def iterate_diffs(document_id):
@@ -124,6 +142,13 @@ class DocStoreTest(unittest.TestCase):
         answer2 = list(get_changes(doc_id, 1))
         self.assertEquals(expected_diffs, answer2)
 
+        #import pdb; pdb.set_trace()
+        d = get_full_document(doc_id)
+        dd = get_document(doc_id)
+        import pdb; pdb.set_trace()
+        dd2 = get_document(doc_id, None)
+        import pdb; pdb.set_trace()
+        x =123
     # def test_diff_store_addition(self):
     #     doc_id = store_document(self.test_document_current)
     #     doc_id = update_document(doc_id, self.test_document_addition)
