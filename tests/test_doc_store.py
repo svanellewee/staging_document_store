@@ -2,8 +2,6 @@ import unittest
 import psycopg2;
 import ujson
 import json_merge_patch as jsonmp
-import pprint
-import contextlib
 
 def store_document(document_json):
     with psycopg2.connect('dbname=docstore') as conn:
@@ -29,6 +27,9 @@ def update_document(document_id, document_json):  # who did this? other metadata
         WHERE full_document_id=%s
         """, (document_id,))
         current_document = curs.fetchone()[0]
+        difference_document = jsonmp.create_patch(document_json, current_document)
+        if not difference_document:
+            return None
 
         curs.execute("""
         SET search_path=staging_document_store;
@@ -36,7 +37,6 @@ def update_document(document_id, document_json):  # who did this? other metadata
         SET full_document=%s
         """, (ujson.dumps(document_json),))
 
-        difference_document = jsonmp.create_patch(document_json, current_document)
         curs.execute("""
         SET search_path=staging_document_store;
         INSERT INTO difference_document (full_document_id, difference_document)
@@ -120,16 +120,12 @@ class DocStoreTestAgain(unittest.TestCase):
 
         timestamp_2, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_2)
-        import pdb; pdb.set_trace()
         result_document = get_document(document_id)
         self.assertEquals(result_document, self.updated_document_2)
 
         doc_timestamp_1 = get_document(document_id, timestamp_1)
         self.assertEquals(doc_timestamp_1, self.updated_document_1)
 
-        # import pdb; pdb.set_trace()
-        # doc_timestamp_2 = get_document(document_id, timestamp_2)
-        # self.assertEquals(doc_timestamp_2, self.updated_document_2)
 
     def test_doc_non_update(self):
         """
@@ -137,4 +133,5 @@ class DocStoreTestAgain(unittest.TestCase):
         """
         document_id = store_document(self.test_document)
         self.assertTrue(document_id is not None)
-        timestamp, difference_id, difference = update_document(document_id, self.test_document)
+        result = update_document(document_id, self.test_document)
+        self.assertIsNone(result)
