@@ -32,6 +32,7 @@ requirements: $(VENV)
 	$(PIP) install psycopg2
 	$(PIP) install ujson
 	$(PIP) install json_merge_patch
+	$(PIP) install docker-compose
 
 clean-venv:
 	rm -fr $(VENV)
@@ -51,8 +52,6 @@ docker-stop:
 	cd tests/ && \
 	../$(VENV_DIR)/bin/docker-compose kill && \
 	../$(VENV_DIR)/bin/docker-compose rm -f
-
-
 
 docker-ps:
 	source ./scripts/env-setup.sh && \
