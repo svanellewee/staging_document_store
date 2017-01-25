@@ -3,13 +3,19 @@ import psycopg2;
 import ujson
 import json_merge_patch as jsonmp
 
+def _create_patch(new_doc, previous_doc):
+    return jsonmp.create_patch(new_doc, previous_doc)
+
+def _apply_patch(orig_doc, change_doc):
+    return jsonmp.merge(orig_doc, change_doc)
+
 def store_document(document_json):
     with psycopg2.connect('dbname=docstore') as conn:
         curs = conn.cursor()
         curs.execute("""
-        SET search_path=staging_document_store;
-        INSERT INTO full_document (full_document)
-        VALUES (%s)
+              SET search_path=staging_document_store;
+           INSERT INTO full_document (full_document)
+           VALUES (%s)
         RETURNING full_document_id
         """, (ujson.dumps(document_json),))
         full_document_id = curs.fetchone()[0]
@@ -21,26 +27,26 @@ def update_document(document_id, document_json):  # who did this? other metadata
         curs = conn.cursor()
 
         curs.execute("""
-        SET search_path=staging_document_store;
+           SET search_path=staging_document_store;
         SELECT full_document
-        FROM full_document
-        WHERE full_document_id=%s
+          FROM full_document
+         WHERE full_document_id=%s
         """, (document_id,))
         current_document = curs.fetchone()[0]
-        difference_document = jsonmp.create_patch(document_json, current_document)
+        difference_document = _create_patch(document_json, current_document)
         if not difference_document:
             return None
 
         curs.execute("""
-        SET search_path=staging_document_store;
+           SET search_path=staging_document_store;
         UPDATE full_document
-        SET full_document=%s
+           SET full_document=%s
         """, (ujson.dumps(document_json),))
 
         curs.execute("""
-        SET search_path=staging_document_store;
-        INSERT INTO difference_document (full_document_id, difference_document)
-        VALUES (%s, %s)
+              SET search_path=staging_document_store;
+           INSERT INTO difference_document (full_document_id, difference_document)
+           VALUES (%s, %s)
         RETURNING difference_document_id, update_time
         """, (document_id, ujson.dumps(difference_document)))
         difference_id, update_time = curs.fetchone()
@@ -66,8 +72,8 @@ def get_head_document(document_id):
         cur = conn.cursor()
         cur.execute("""
         SELECT full_document
-        FROM staging_document_store.full_document
-        WHERE full_document_id=%(document_id)s
+          FROM staging_document_store.full_document
+         WHERE full_document_id=%(document_id)s
         """, {"document_id": document_id})
         return cur.fetchone()[0]
 
@@ -77,7 +83,7 @@ def get_document(document_id, timestamp=None):
         return head_document
 
     def apply_changes(total_doc, current_doc):
-        return jsonmp.merge(total_doc, current_doc[0])
+        return _apply_patch(total_doc, current_doc[0])
 
     changes = get_document_changes(document_id, timestamp=timestamp)
     _changes = changes.fetchall()
