@@ -1,8 +1,6 @@
 import unittest
 import json_merge_patch as jsonmp
 import requests
-import pprint
-import json
 import datetime
 
 
@@ -53,7 +51,6 @@ def setup_db():
     
     response = requests.put("{}/staging_document_store/".format(CONNECTION_STRING),
                             json=settings)
-    pprint.pprint(json.loads(response.text))
 
     
 def store_document(orig_document_json):
@@ -87,43 +84,45 @@ def update_document(document_id, orig_document_json):  # who did this? other met
 
 
 def get_document_changes(document_id, timestamp=None):
-    import pdb; pdb.set_trace()
+    must = [ { "match": {
+        "document_id": document_id
+    }}]
+    t = timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+    
+    must = [ { "match": { "document_id": document_id,} },
+             {'range' : {"date" : { "gt": t, "lte": now } }}]
+    
+    sort = { "sort" : [
+        { "date" : {"order" : "desc"}},
+    ]}
     query = {
         "query": {
-            "filtered": {
-                "query": {
-                    "match_all": {
-                        #"document_id": document_id
-                    }
-                },
+            "bool": {
+                "must": must
             }
         }
     }
-    if timestamp:
-        query['query']['filtered'].update({"filter": {
-            "range": {
-                "date": {
-                    "gte": timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")
-                }
-            }
-        }})
-        
-    response = requests.get("{}/staging_document_store/difference_document/_search".format(CONNECTION_STRING), json=query)
-    import pdb; pdb.set_trace()
-    return response.json()
+    json_data = {}
+
+    json_data.update(sort)
+    json_data.update(query)
+    response = requests.get("{}/staging_document_store/difference_document/_search".format(CONNECTION_STRING), json=json_data)
+    hits = response.json()['hits']['hits']
+    return [hit['_source']['document'] for hit in hits]
 
 def get_head_document(document_id):
     response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
     return response.json()['_source']['document']
     
-
 def get_document(document_id, timestamp=None):
-    if timestamp:
-        import pdb; pdb.set_trace()
-        bla = get_document_changes(document_id, timestamp)
-        import pdb; pdb.set_trace()
-        
-    return get_head_document(document_id)
+    head_document = get_head_document(document_id)
+
+    if not timestamp:
+        return head_document
+    
+    changes = get_document_changes(document_id, timestamp)
+    return reduce(_apply_patch, changes, head_document)
 
 class DocStoreTestAgain(unittest.TestCase):
     
@@ -159,7 +158,7 @@ class DocStoreTestAgain(unittest.TestCase):
                                                                  self.updated_document_2)
         result_document = get_document(document_id, timestamp_2)
         self.assertEquals(result_document, self.updated_document_2)
-
+        import pdb; pdb.set_trace()
         doc_timestamp_1 = get_document(document_id, timestamp_1)
         self.assertEquals(doc_timestamp_1, self.updated_document_1)
 
