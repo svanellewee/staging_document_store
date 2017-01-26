@@ -3,7 +3,6 @@ import json_merge_patch as jsonmp
 import requests
 import datetime
 
-
 def _create_patch(new_doc, previous_doc):
     return jsonmp.create_patch(new_doc, previous_doc)
 
@@ -80,6 +79,8 @@ def update_document(document_id, orig_document_json):  # who did this? other met
         raise Exception("Difference not built")
 
     difference_id = response_difference.json()['_id']
+    requests.post("{}/staging_document_store/_flush".format(CONNECTION_STRING))
+
     return datetime.datetime.strptime(difference_document['date'], "%Y-%m-%d %H:%M:%S.%f"), difference_id, difference_document['document']
 
 
@@ -91,11 +92,15 @@ def get_document_changes(document_id, timestamp=None):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     must = [ { "match": { "document_id": document_id,} },
-             {'range' : {"date" : { "gt": t, "lte": now } }}]
+             {'range' : {"date" : { "gt": t,
+                                    "lte": now
+             } }}
+    ]
 
     sort = { "sort" : [
         { "date" : {"order" : "desc"}},
     ]}
+
     query = {
         "query": {
             "bool": {
@@ -104,12 +109,14 @@ def get_document_changes(document_id, timestamp=None):
         }
     }
     json_data = {}
-
     json_data.update(sort)
     json_data.update(query)
+
     response = requests.get("{}/staging_document_store/difference_document/_search".format(CONNECTION_STRING), json=json_data)
-    hits = response.json()['hits']['hits']
-    return [hit['_source']['document'] for hit in hits]
+    response_json = response.json()
+    hits = response_json['hits']['hits']
+    result = [hit['_source']['document'] for hit in hits]
+    return result
 
 def get_head_document(document_id):
     response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
