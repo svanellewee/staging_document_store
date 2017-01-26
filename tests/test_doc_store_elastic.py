@@ -29,6 +29,7 @@ def setup_db():
     requests.delete("{}/staging_document_store/".format(CONNECTION_STRING))
     requests.delete("{}/staging_document_store/full_document/".format(CONNECTION_STRING))
     requests.delete("{}/staging_document_store/difference_document/".format(CONNECTION_STRING))
+    
     settings = {
         "mappings": {
             "full_document": {
@@ -44,13 +45,12 @@ def setup_db():
                     "date": {
                         "type": "date",
                         "format": "yyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd||epoch_millis"                        
-                        
                     }
                 }
             }
-            
         }
     }
+    
     response = requests.put("{}/staging_document_store/".format(CONNECTION_STRING),
                             json=settings)
     pprint.pprint(json.loads(response.text))
@@ -59,7 +59,7 @@ def setup_db():
 def store_document(orig_document_json):
     document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
-                            json=document_json)
+                             json=document_json)
     return response.json()['_id']
 
 
@@ -73,7 +73,7 @@ def update_document(document_id, orig_document_json):  # who did this? other met
     
     difference_document = build_record(document_json=difference, document_id=document_id)
     response = requests.put("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING, document_id),
-                             json=document_json)
+                            json=document_json)
     if response.status_code == 400:
         raise Exception("Update not made")
     
