@@ -17,7 +17,7 @@ def build_record(document_json, timestamp=None, document_id=None):
                    "date": timestamp})
     if document_id:
         result['document_id'] = document_id
-        
+
     return result
 
 CONNECTION_STRING='http://{docker_machine_ip}:9200'.format(docker_machine_ip='192.168.99.100')
@@ -27,14 +27,14 @@ def setup_db():
     requests.delete("{}/staging_document_store/".format(CONNECTION_STRING))
     requests.delete("{}/staging_document_store/full_document/".format(CONNECTION_STRING))
     requests.delete("{}/staging_document_store/difference_document/".format(CONNECTION_STRING))
-    
+
     settings = {
         "mappings": {
             "full_document": {
                 "properties": {
                     "date": {
                         "type": "date",
-                        "format": "yyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd||epoch_millis"                        
+                        "format": "yyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd||epoch_millis"
                     }
                 }
             },
@@ -42,17 +42,17 @@ def setup_db():
                 "properties": {
                     "date": {
                         "type": "date",
-                        "format": "yyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd||epoch_millis"                        
+                        "format": "yyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd||epoch_millis"
                     }
                 }
             }
         }
     }
-    
+
     response = requests.put("{}/staging_document_store/".format(CONNECTION_STRING),
                             json=settings)
 
-    
+
 def store_document(orig_document_json):
     document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
@@ -63,22 +63,22 @@ def store_document(orig_document_json):
 def update_document(document_id, orig_document_json):  # who did this? other metadata?
     document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     current_document = get_head_document(document_id)
-    
+
     difference = _create_patch(document_json['document'], current_document)
     if not difference:
         return None
-    
+
     difference_document = build_record(document_json=difference, document_id=document_id)
     response = requests.put("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING, document_id),
                             json=document_json)
     if response.status_code == 400:
         raise Exception("Update not made")
-    
+
     response_difference = requests.post("{}/staging_document_store/difference_document/".format(CONNECTION_STRING),
                                         json=difference_document)
     if response_difference.status_code == 400:
         raise Exception("Difference not built")
-    
+
     difference_id = response_difference.json()['_id']
     return datetime.datetime.strptime(difference_document['date'], "%Y-%m-%d %H:%M:%S.%f"), difference_id, difference_document['document']
 
@@ -89,10 +89,10 @@ def get_document_changes(document_id, timestamp=None):
     }}]
     t = timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-    
+
     must = [ { "match": { "document_id": document_id,} },
              {'range' : {"date" : { "gt": t, "lte": now } }}]
-    
+
     sort = { "sort" : [
         { "date" : {"order" : "desc"}},
     ]}
@@ -114,18 +114,18 @@ def get_document_changes(document_id, timestamp=None):
 def get_head_document(document_id):
     response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
     return response.json()['_source']['document']
-    
+
 def get_document(document_id, timestamp=None):
     head_document = get_head_document(document_id)
 
     if not timestamp:
         return head_document
-    
+
     changes = get_document_changes(document_id, timestamp)
     return reduce(_apply_patch, changes, head_document)
 
 class DocStoreTestAgain(unittest.TestCase):
-    
+
     test_document = {"colour": "green",
                      "name": "Frog"}
 
@@ -158,7 +158,6 @@ class DocStoreTestAgain(unittest.TestCase):
                                                                  self.updated_document_2)
         result_document = get_document(document_id, timestamp_2)
         self.assertEquals(result_document, self.updated_document_2)
-        import pdb; pdb.set_trace()
         doc_timestamp_1 = get_document(document_id, timestamp_1)
         self.assertEquals(doc_timestamp_1, self.updated_document_1)
 
@@ -171,5 +170,3 @@ class DocStoreTestAgain(unittest.TestCase):
         self.assertTrue(document_id is not None)
         result = update_document(document_id, self.test_document)
         self.assertIsNone(result)
-
-        
