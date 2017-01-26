@@ -3,6 +3,9 @@ import json_merge_patch as jsonmp
 import requests
 import pprint
 import json
+import datetime
+import time
+
 
 def _create_patch(new_doc, previous_doc):
     return jsonmp.create_patch(new_doc, previous_doc)
@@ -43,17 +46,28 @@ def setup_db():
                             json=settings)
     pprint.pprint(json.loads(response.text))
     
-def store_document(document_json):
+def store_document(orig_document_json):
+    document_json = {}
+    document_json.update({"document": {k:v for k,v in orig_document_json.items()}})
+    document_json.update({"date": time.strftime('%Y-%m-%d %H:%M:%S')})
     response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
                             json=document_json)
     return response.json()['_id']
 
-def update_document(document_id, document_json):  # who did this? other metadata?
+def update_document(document_id, orig_document_json):  # who did this? other metadata?
+    document_json = {}
+    document_json.update({"document": {k:v for k,v in orig_document_json.items()}})
+    document_json.update({"date": time.strftime('%Y-%m-%d %H:%M:%S')})
     current_document = get_head_document(document_id)
-    difference_document = _create_patch(document_json, current_document)
-    if not difference_document:
+    
+    difference = _create_patch(document_json['document'], current_document['document'])
+    if not difference:
         return None
-
+    
+    difference_document = {}
+    difference_document.update({"document_id": document_id})
+    difference_document.update({"document": difference})
+    difference_document.update({"date": time.strftime('%Y-%m-%d %H:%M:%S')})
     response = requests.put("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING, document_id),
                              json=document_json)
     if response.status_code == 400:
