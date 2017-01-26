@@ -116,6 +116,9 @@ class DocStoreTestAgain(unittest.TestCase):
     updated_document_2 = {"colour": "green",
                           "class": "amphibian"}
 
+    updated_document_3 = {"colour": "red",
+                          "class": "amphibian"}
+
     def setUp(self):
         setup_db()
 
@@ -137,11 +140,17 @@ class DocStoreTestAgain(unittest.TestCase):
 
         timestamp_2, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_2)
+
+        timestamp_3, difference_id, difference = update_document(document_id,
+                                                                 self.updated_document_3)
+
         result_document = get_document(document_id, timestamp_2)
         self.assertEquals(result_document, self.updated_document_2)
 
         doc_timestamp_1 = get_document(document_id, timestamp_1)
         self.assertEquals(doc_timestamp_1, self.updated_document_1)
+        doc_timestamp_3 = get_document(document_id, timestamp_3)
+        self.assertEquals(doc_timestamp_3, self.updated_document_3)
 
 
     def test_doc_non_update(self):
