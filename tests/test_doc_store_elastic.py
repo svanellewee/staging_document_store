@@ -1,6 +1,4 @@
 import unittest
-import psycopg2;
-import ujson
 import json_merge_patch as jsonmp
 import requests
 import pprint
@@ -16,10 +14,34 @@ CONNECTION_STRING='http://{docker_machine_ip}:9200'.format(docker_machine_ip='19
 
 
 def setup_db():
-    request =requests.delete("{}/staging_document_store/".format(CONNECTION_STRING))
-    request =requests.delete("{}/staging_document_store/full_document/".format(CONNECTION_STRING))
-    request =requests.delete("{}/staging_document_store/difference_document/".format(CONNECTION_STRING))
-    #pprint.pprint(json.loads(request.text))
+    requests.delete("{}/staging_document_store/".format(CONNECTION_STRING))
+    requests.delete("{}/staging_document_store/full_document/".format(CONNECTION_STRING))
+    requests.delete("{}/staging_document_store/difference_document/".format(CONNECTION_STRING))
+    settings = {
+        "mappings": {
+            "full_document": {
+                "properties": {
+                    "date": {
+                        "type": "date",
+                        "format": "yyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"                        
+                    }
+                }
+            },
+            "difference_document": {
+                "properties": {
+                    "date": {
+                        "type": "date",
+                        "format": "yyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"                        
+                        
+                    }
+                }
+            }
+            
+        }
+    }
+    response = requests.put("{}/staging_document_store/".format(CONNECTION_STRING),
+                            json=settings)
+    pprint.pprint(json.loads(response.text))
     
 def store_document(document_json):
     response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
@@ -79,7 +101,6 @@ class DocStoreTestAgain(unittest.TestCase):
     def test_doc_update(self):
         document_id = store_document(self.test_document)
         self.assertTrue(document_id is not None)
-        import pdb; pdb.set_trace()
         timestamp_1, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_1)
         result_document = get_document(document_id)
