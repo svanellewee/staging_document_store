@@ -9,7 +9,19 @@ def _create_patch(new_doc, previous_doc):
 def _apply_patch(orig_doc, change_doc):
     return jsonmp.merge(orig_doc, change_doc)
 
-CONNECTION_STRING='dbname=docstore user=postgres host={docker_machine_ip}'.format(docker_machine_ip='192.168.99.100')
+CONNECTION_STRING='dbname={dbname} user={user} host={docker_machine_ip}'.format(dbname='docstore',
+                                                                                user='postgres',
+                                                                                docker_machine_ip='192.168.99.100')
+
+def setup_db():
+    with psycopg2.connect(CONNECTION_STRING) as conn:
+        cur = conn.cursor()
+        cur.execute("""
+        TRUNCATE staging_document_store.full_document CASCADE
+        """)
+        cur.execute("""
+        TRUNCATE staging_document_store.difference_document CASCADE
+        """)
 
 def store_document(document_json):
     with psycopg2.connect(CONNECTION_STRING) as conn:
@@ -94,21 +106,16 @@ def get_document(document_id, timestamp=None):
 class DocStoreTestAgain(unittest.TestCase):
     test_document = {"colour": "green",
                      "name": "Frog"}
+
     updated_document_1 = {"colour": "green",
                           "name": "Frog",
                           "class": "amphibian"}
+
     updated_document_2 = {"colour": "green",
                           "class": "amphibian"}
 
     def setUp(self):
-        with psycopg2.connect(CONNECTION_STRING) as conn:
-            cur = conn.cursor()
-            cur.execute("""
-            TRUNCATE staging_document_store.full_document CASCADE
-            """)
-            cur.execute("""
-            TRUNCATE staging_document_store.difference_document CASCADE
-            """)
+        setup_db()
 
     def test_doc_add(self):
         document_id = store_document(self.test_document)
