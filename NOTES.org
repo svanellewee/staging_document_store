@@ -1,0 +1,53 @@
+Some example
+#+BEGIN_SRC bash
+  ID=17
+  echo "PUT 1...."
+
+  curl -XPUT "192.168.99.100:9200/twitter/tweet/$ID?pretty=true" -d '{"message": "Elasticsearch versioning"}'
+  curl -XGET "192.168.99.100:9200/twitter/tweet/$ID?pretty=true"
+  echo "PUT 2...."
+  curl -XPUT "192.168.99.100:9200/twitter/tweet/$ID?&pretty=true" -d '{"message": "Elasticsearch versioning again"}'
+  curl -XGET "192.168.99.100:9200/twitter/tweet/$ID?pretty=true"
+  echo "PUT 3...."
+  curl -XPUT "192.168.99.100:9200/twitter/tweet/$ID?version=2&pretty=true" -d '{"message": "Elasticsearch versioning again bla"}'
+  curl -XGET "192.168.99.100:9200/twitter/tweet/$ID?pretty=true"
+
+  curl -XGET "192.168.99.100:9200/twitter/tweet/$ID?version=2&pretty=true"
+
+#+END_SRC
+
+
+#+BEGIN_SRC bash
+
+svanellewee@Stephan-Van-Ellewee:~/workspace/capaldi$ make docker-test-ping
+curl -XPUT 192.168.99.100:9200/twitter/tweet/1?pretty=true -d'{"message": "Elasticsearch versioning blabla"}'
+{
+  "_index" : "twitter",
+  "_type" : "tweet",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "created" : true
+}
+svanellewee@Stephan-Van-Ellewee:~/workspace/capaldi$ make docker-test-ping
+curl -XPUT 192.168.99.100:9200/twitter/tweet/1?pretty=true -d'{"message": "Elasticsearch versioning blabla"}'
+{
+  "_index" : "twitter",
+  "_type" : "tweet",
+  "_id" : "1",
+  "_version" : 2,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "created" : false
+}
+svanellewee@Stephan-Van-Ellewee:~/workspace/capaldi$ 
+#+END_SRC

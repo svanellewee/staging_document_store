@@ -13,6 +13,8 @@ CONNECTION_STRING='dbname={dbname} user={user} host={docker_machine_ip}'.format(
                                                                                 user='postgres',
                                                                                 docker_machine_ip='192.168.99.100')
 
+
+
 def setup_db():
     with psycopg2.connect(CONNECTION_STRING) as conn:
         cur = conn.cursor()

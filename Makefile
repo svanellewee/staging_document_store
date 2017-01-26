@@ -4,10 +4,12 @@ PIP=$(VENV)/bin/pip
 PYTHON=$(VENV)/bin/python
 DOCKER_MACHINE_IP=192.168.99.100
 DOCKER_POSTGRES_PORT=5432
+DOCKER_ELASTIC_PORT=9200
 PSQL=psql -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
 INITDB=initdb -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
 CREATEDB=createdb -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
 PG_CTL=pg_ctl
+ELASTICSEARCH=$(DOCKER_MACHINE_IP):$(DOCKER_ELASTIC_PORT)
 
 # $(PG_CTL) -D $(SCHEMADATA) -l logfile start
 $(SCHEMADATA):
@@ -64,3 +66,15 @@ docker-postgres-ssh:
 docker-elasticsearch-ssh:
 	source ./scripts/env-setup.sh && \
 	docker exec -it  tests_elasticsearch_1  /bin/bash
+
+docker-elastic-status:
+	curl $(ELASTICSEARCH)
+
+docker-test-put:
+	curl -XPUT $(ELASTICSEARCH)/twitter/tweet/1?pretty=true -d'{"message": "Elasticsearch versioning blabla yadda"}'
+
+docker-test-get:
+	curl -XGET $(ELASTICSEARCH)/twitter/tweet/1?version=1&pretty=true
+
+docker-test-get3:
+	curl -XGET $(ELASTICSEARCH)/twitter/tweet/1?version=1&pretty=true 
