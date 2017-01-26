@@ -2,6 +2,9 @@ import unittest
 import psycopg2;
 import ujson
 import json_merge_patch as jsonmp
+import requests
+import pprint
+import json
 
 def _create_patch(new_doc, previous_doc):
     return jsonmp.create_patch(new_doc, previous_doc)
@@ -9,28 +12,48 @@ def _create_patch(new_doc, previous_doc):
 def _apply_patch(orig_doc, change_doc):
     return jsonmp.merge(orig_doc, change_doc)
 
-CONNECTION_STRING='dbname={dbname} user={user} host={docker_machine_ip}'.format(dbname='docstore',
-                                                                                user='postgres',
-                                                                                docker_machine_ip='192.168.99.100')
+CONNECTION_STRING='http://{docker_machine_ip}:9200'.format(docker_machine_ip='192.168.99.100')
 
 
 def setup_db():
-    pass
-
+    request =requests.delete("{}/staging_document_store/".format(CONNECTION_STRING))
+    request =requests.delete("{}/staging_document_store/full_document/".format(CONNECTION_STRING))
+    request =requests.delete("{}/staging_document_store/difference_document/".format(CONNECTION_STRING))
+    #pprint.pprint(json.loads(request.text))
+    
 def store_document(document_json):
-    pass
+    response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
+                            json=document_json)
+    return response.json()['_id']
 
 def update_document(document_id, document_json):  # who did this? other metadata?
-    pass
+    current_document = get_head_document(document_id)
+    difference_document = _create_patch(document_json, current_document)
+    if not difference_document:
+        return None
+
+    response = requests.put("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING, document_id),
+                             json=document_json)
+    if response.status_code == 400:
+        raise Exception("Update not made")
+    
+    response_difference = requests.post("{}/staging_document_store/difference_document/".format(CONNECTION_STRING),
+                                        json=difference_document)
+    if response_difference.status_code == 400:
+        raise Exception("Difference not built")
+    difference_id = response_difference.json()['_id']
+    return document_id, difference_id, difference_document
 
 def get_document_changes(document_id, timestamp=None):
     pass
 
 def get_head_document(document_id):
-    pass
+    response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
+    return response.json()['_source']
+    
 
 def get_document(document_id, timestamp=None):
-    pass
+    return get_head_document(document_id)
 
 class DocStoreTestAgain(unittest.TestCase):
     test_document = {"colour": "green",
@@ -56,7 +79,7 @@ class DocStoreTestAgain(unittest.TestCase):
     def test_doc_update(self):
         document_id = store_document(self.test_document)
         self.assertTrue(document_id is not None)
-
+        import pdb; pdb.set_trace()
         timestamp_1, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_1)
         result_document = get_document(document_id)

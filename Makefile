@@ -35,6 +35,7 @@ requirements: $(VENV)
 	$(PIP) install ujson
 	$(PIP) install json_merge_patch
 	$(PIP) install docker-compose
+	$(PIP) install requests
 
 clean-venv:
 	rm -fr $(VENV)
@@ -70,11 +71,10 @@ docker-elasticsearch-ssh:
 docker-elastic-status:
 	curl $(ELASTICSEARCH)
 
-docker-test-put:
-	curl -XPUT $(ELASTICSEARCH)/twitter/tweet/1?pretty=true -d'{"message": "Elasticsearch versioning blabla yadda"}'
 
-docker-test-get:
-	curl -XGET $(ELASTICSEARCH)/twitter/tweet/1?version=1&pretty=true
+docker-elastic-full:
+	curl -XGET $(ELASTICSEARCH)/staging_document_store/full_document/?pretty=true	
+	curl -XGET $(ELASTICSEARCH)/staging_document_store/full_document/_search?pretty=true
 
-docker-test-get3:
-	curl -XGET $(ELASTICSEARCH)/twitter/tweet/1?version=1&pretty=true 
+docker-elastic-diff:
+	curl -XGET $(ELASTICSEARCH)/staging_document_store/difference_document/_search?pretty=true
