@@ -1,25 +1,25 @@
-INITDB=initdb
-CREATEDB=createdb
-PSQL=psql
-PG_CTL=pg_ctl
 SCHEMADATA=./schemadata
-VENV=venv
-PIP=./venv/bin/pip
-PYTHON=./venv/bin/python
+VENV=./venv/
+PIP=$(VENV)/bin/pip
+PYTHON=$(VENV)/bin/python
 DOCKER_MACHINE_IP=192.168.99.100
+DOCKER_POSTGRES_PORT=5432
+PSQL=psql -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
+INITDB=initdb -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
+CREATEDB=createdb -h $(DOCKER_MACHINE_IP) -p $(DOCKER_POSTGRES_PORT) -U postgres
+PG_CTL=pg_ctl
 
+# $(PG_CTL) -D $(SCHEMADATA) -l logfile start
 $(SCHEMADATA):
-	$(INITDB) -D $(SCHEMADATA)
-	$(PG_CTL) -D $(SCHEMADATA) -l logfile start
+	$(INITDB) -D $(SCHEMADATA) 
 	sleep 1
 
+#$(PG_CTL) -D $(SCHEMADATA) -l logfile stop
 clean: 
-	$(PG_CTL) -D $(SCHEMADATA) -l logfile stop
-	sleep 1
 	rm -fr $(SCHEMADATA)
 
 init: $(SCHEMADATA)
-	$(CREATEDB) docstore
+	$(CREATEDB) docstore  
 
 schema:
 	$(PSQL) docstore -f schema.sql

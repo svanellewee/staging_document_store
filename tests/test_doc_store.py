@@ -9,8 +9,10 @@ def _create_patch(new_doc, previous_doc):
 def _apply_patch(orig_doc, change_doc):
     return jsonmp.merge(orig_doc, change_doc)
 
+CONNECTION_STRING='dbname=docstore user=postgres host={docker_machine_ip}'.format(docker_machine_ip='192.168.99.100')
+
 def store_document(document_json):
-    with psycopg2.connect('dbname=docstore') as conn:
+    with psycopg2.connect(CONNECTION_STRING) as conn:
         curs = conn.cursor()
         curs.execute("""
               SET search_path=staging_document_store;
@@ -23,7 +25,7 @@ def store_document(document_json):
 
 
 def update_document(document_id, document_json):  # who did this? other metadata?
-    with psycopg2.connect('dbname=docstore') as conn:
+    with psycopg2.connect(CONNECTION_STRING) as conn:
         curs = conn.cursor()
 
         curs.execute("""
@@ -54,7 +56,7 @@ def update_document(document_id, document_json):  # who did this? other metadata
 
 
 def get_document_changes(document_id, timestamp=None):
-    with psycopg2.connect('dbname=docstore') as conn:
+    with psycopg2.connect(CONNECTION_STRING) as conn:
         cur = conn.cursor()
         cur.execute("""
            SELECT difference_document
@@ -68,7 +70,7 @@ def get_document_changes(document_id, timestamp=None):
 
 
 def get_head_document(document_id):
-    with psycopg2.connect('dbname=docstore') as conn:
+    with psycopg2.connect(CONNECTION_STRING) as conn:
         cur = conn.cursor()
         cur.execute("""
         SELECT full_document
@@ -99,7 +101,7 @@ class DocStoreTestAgain(unittest.TestCase):
                           "class": "amphibian"}
 
     def setUp(self):
-        with psycopg2.connect('dbname=docstore') as conn:
+        with psycopg2.connect(CONNECTION_STRING) as conn:
             cur = conn.cursor()
             cur.execute("""
             TRUNCATE staging_document_store.full_document CASCADE
