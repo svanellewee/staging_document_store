@@ -83,12 +83,34 @@ def update_document(document_id, orig_document_json):  # who did this? other met
         raise Exception("Difference not built")
     
     difference_id = response_difference.json()['_id']
-    return difference_document['date'], difference_id, difference_document['document']
+    return datetime.datetime.strptime(difference_document['date'], "%Y-%m-%d %H:%M:%S.%f"), difference_id, difference_document['document']
 
 
 def get_document_changes(document_id, timestamp=None):
-    pass
-
+    import pdb; pdb.set_trace()
+    query = {
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {
+                        #"document_id": document_id
+                    }
+                },
+            }
+        }
+    }
+    if timestamp:
+        query['query']['filtered'].update({"filter": {
+            "range": {
+                "date": {
+                    "gte": timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")
+                }
+            }
+        }})
+        
+    response = requests.get("{}/staging_document_store/difference_document/_search".format(CONNECTION_STRING), json=query)
+    import pdb; pdb.set_trace()
+    return response.json()
 
 def get_head_document(document_id):
     response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
@@ -96,9 +118,15 @@ def get_head_document(document_id):
     
 
 def get_document(document_id, timestamp=None):
+    if timestamp:
+        import pdb; pdb.set_trace()
+        bla = get_document_changes(document_id, timestamp)
+        import pdb; pdb.set_trace()
+        
     return get_head_document(document_id)
 
 class DocStoreTestAgain(unittest.TestCase):
+    
     test_document = {"colour": "green",
                      "name": "Frog"}
 
@@ -129,7 +157,7 @@ class DocStoreTestAgain(unittest.TestCase):
 
         timestamp_2, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_2)
-        result_document = get_document(document_id)
+        result_document = get_document(document_id, timestamp_2)
         self.assertEquals(result_document, self.updated_document_2)
 
         doc_timestamp_1 = get_document(document_id, timestamp_1)
@@ -144,3 +172,5 @@ class DocStoreTestAgain(unittest.TestCase):
         self.assertTrue(document_id is not None)
         result = update_document(document_id, self.test_document)
         self.assertIsNone(result)
+
+        

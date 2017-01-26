@@ -137,7 +137,7 @@ class DocStoreTestAgain(unittest.TestCase):
 
         timestamp_2, difference_id, difference = update_document(document_id,
                                                                  self.updated_document_2)
-        result_document = get_document(document_id)
+        result_document = get_document(document_id, timestamp_2)
         self.assertEquals(result_document, self.updated_document_2)
 
         doc_timestamp_1 = get_document(document_id, timestamp_1)

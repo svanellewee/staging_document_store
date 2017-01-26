@@ -51,3 +51,38 @@ curl -XPUT 192.168.99.100:9200/twitter/tweet/1?pretty=true -d'{"message": "Elast
 }
 svanellewee@Stephan-Van-Ellewee:~/workspace/capaldi$ 
 #+END_SRC
+
+
+#+BEGIN_SRC bash
+  curl -XGET 192.168.99.100:9200/staging_document_store/difference_document/_search -d'{
+      "query": {
+          "filtered": {
+              "query": {
+                  "match_all": {
+                      "document_id": "AVnZ_ekQ5qLDpfg817Gj"
+                  }
+              },
+              "filter": {
+                  "range": {
+                      "date": {   "gte": "2017-01-26 10:56:53.388257"}
+                  }
+              }
+          }
+      }
+  }'
+
+
+
+  curl -XGET 192.168.99.100:9200/staging_document_store/difference_document/_search -d'{
+      "query": {
+                  "match_all": {
+                  }
+          }
+      }'
+
+
+  curl -XGET 192.168.99.100:9200/staging_document_store/difference_document/_search -d'---
+      query:
+         match_all: {}
+  '
+#+END_SRC
