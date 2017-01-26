@@ -59,6 +59,16 @@ def store_document(orig_document_json):
     return response.json()['_id']
 
 
+def flushindex(index_name):
+    def flusher(fn):
+        def _decorated(*args, **kwargs):
+            result = fn(*args, **kwargs)
+            requests.post("{}/{}/_flush".format(CONNECTION_STRING, index_name))  # you need to flush after you're done....
+            return result
+        return _decorated
+    return flusher
+
+@flushindex("staging_document_store")
 def update_document(document_id, orig_document_json):  # who did this? other metadata?
     document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     current_document = get_head_document(document_id)
@@ -79,7 +89,7 @@ def update_document(document_id, orig_document_json):  # who did this? other met
         raise Exception("Difference not built")
 
     difference_id = response_difference.json()['_id']
-    requests.post("{}/staging_document_store/_flush".format(CONNECTION_STRING))
+    # requests.post("{}/staging_document_store/_flush".format(CONNECTION_STRING))  # you need to flush after you're done....
 
     return datetime.datetime.strptime(difference_document['date'], "%Y-%m-%d %H:%M:%S.%f"), difference_id, difference_document['document']
 
