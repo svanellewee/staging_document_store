@@ -4,7 +4,6 @@ import requests
 import pprint
 import json
 import datetime
-import time
 
 
 def _create_patch(new_doc, previous_doc):
@@ -12,6 +11,16 @@ def _create_patch(new_doc, previous_doc):
 
 def _apply_patch(orig_doc, change_doc):
     return jsonmp.merge(orig_doc, change_doc)
+
+def build_record(document_json, timestamp=None, document_id=None):
+    timestamp = timestamp or datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+    result = {}
+    result.update({"document": document_json,
+                   "date": timestamp})
+    if document_id:
+        result['document_id'] = document_id
+        
+    return result
 
 CONNECTION_STRING='http://{docker_machine_ip}:9200'.format(docker_machine_ip='192.168.99.100')
 
@@ -45,29 +54,24 @@ def setup_db():
     response = requests.put("{}/staging_document_store/".format(CONNECTION_STRING),
                             json=settings)
     pprint.pprint(json.loads(response.text))
+
     
 def store_document(orig_document_json):
-    document_json = {}
-    document_json.update({"document": {k:v for k,v in orig_document_json.items()}})
-    document_json.update({"date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")})
+    document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     response = requests.post("{}/staging_document_store/full_document/".format(CONNECTION_STRING),
                             json=document_json)
     return response.json()['_id']
 
+
 def update_document(document_id, orig_document_json):  # who did this? other metadata?
-    document_json = {}
-    document_json.update({"document": {k:v for k,v in orig_document_json.items()}})
-    document_json.update({"date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")})
+    document_json = build_record(document_json={k:v for k,v in orig_document_json.items()})
     current_document = get_head_document(document_id)
     
     difference = _create_patch(document_json['document'], current_document)
     if not difference:
         return None
     
-    difference_document = {}
-    difference_document.update({"document_id": document_id})
-    difference_document.update({"document": difference})
-    difference_document.update({"date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")})
+    difference_document = build_record(document_json=difference, document_id=document_id)
     response = requests.put("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING, document_id),
                              json=document_json)
     if response.status_code == 400:
@@ -81,8 +85,10 @@ def update_document(document_id, orig_document_json):  # who did this? other met
     difference_id = response_difference.json()['_id']
     return difference_document['date'], difference_id, difference_document['document']
 
+
 def get_document_changes(document_id, timestamp=None):
     pass
+
 
 def get_head_document(document_id):
     response = requests.get("{}/staging_document_store/full_document/{}".format(CONNECTION_STRING,document_id))
