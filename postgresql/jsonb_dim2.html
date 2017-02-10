@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Quick report</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+      body {  font-family: verdana, helvetica, sans-serif; margin: 0px; padding: 0; }
+      h1 { font-weight: bold; font-size: 150%; border-bottom-style: solid; border-bottom-width: 2px; margin-top: 0px; padding-bottom: 0.5ex; color: #eeeeee; overflow: hidden; text-overflow: ellipsis; }
+      h2 { font-size: 130%; padding-bottom: 0.5ex; color: #009ACE; border-bottom-style: solid; border-bottom-width: 2px; }
+      h3 { font-size: 110%; padding-bottom: 0.5ex; color: #000000; }
+      th { text-align: left; background-color: #009ACE; color: #eeeeee; }
+      #ReportHeader { padding: 10px; background-color: #009ACE; color: #eeeeee; border-bottom-style: solid; border-bottom-width: 2px; border-color: #999999; }
+      #ReportHeader th { width: 25%; white-space: nowrap; vertical-align: top; }
+      #ReportHeader td { vertical-align: top; color: #eeeeee; }
+      #ReportNotes { padding: 10px; background-color: #eeeeee; font-size: 80%; border-bottom-style: solid; border-bottom-width: 2px; border-color: #999999; }
+      .ReportSQL { margin-bottom: 10px; padding: 10px; display: block; background-color: #eeeeee; font-family: monospace; }
+      #ReportDetails { margin-left: 10px; margin-right: 10px; margin-bottom: 10px; }
+      #ReportDetails td, th { font-size: 80%; margin-left: 2px; margin-right: 2px; }
+      #ReportDetails th { border-bottom-color: #777777; border-bottom-style: solid; border-bottom-width: 2px; }
+      .ReportDetailsOddDataRow { background-color: #dddddd; }
+      .ReportDetailsEvenDataRow { background-color: #eeeeee; }
+      .ReportTableHeaderCell { background-color: #dddddd; color: #009ACE; vertical-align: top; font-size: 80%; white-space: nowrap; }
+      .ReportTableValueCell { vertical-align: top; font-size: 80%; white-space: nowrap; }
+      .ReportTableInfo { font-size: 80%; font-style: italic; }
+      #ReportFooter { font-weight: bold; font-size: 80%; text-align: right; background-color: #009ACE; color: #eeeeee; margin-top: 10px; padding: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-top-style: solid; border-top-width: 2px; border-color: #999999; }
+      #ReportFooter a { color: #ffffff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div id="ReportHeader"><h1>Quick report</h1><b>Generated: </b>Fri Feb 10 08:38:22 2017<br /><b>Database: </b>blah on postgres@cpt-hq-psql01:5432<br /></div>
+    <div id="ReportDetails">
+      <h2>Query results</h2>
+      <div style="overflow:auto;">
+        <table>
+          <tr>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">jsonb_dim_id</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">version</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">date_from</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">date_to</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">id</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">date_created</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">data</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">last_insert_update</th>
+            <th class="ReportTableHeaderCell" width="11.1111111111111%">last_version</th>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">1900-01-01 00:00:00</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 02:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:10.944</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">3</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:10.966</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">5</td>
+            <td class="ReportTableValueCell">3</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:10.99</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">7</td>
+            <td class="ReportTableValueCell">4</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.009</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">9</td>
+            <td class="ReportTableValueCell">5</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.016</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">11</td>
+            <td class="ReportTableValueCell">6</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.03</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">13</td>
+            <td class="ReportTableValueCell">7</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.038</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">15</td>
+            <td class="ReportTableValueCell">8</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.044</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">17</td>
+            <td class="ReportTableValueCell">9</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "kosie pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.049</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">19</td>
+            <td class="ReportTableValueCell">10</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.054</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">21</td>
+            <td class="ReportTableValueCell">11</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.066</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">23</td>
+            <td class="ReportTableValueCell">12</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.071</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">25</td>
+            <td class="ReportTableValueCell">13</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.078</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">27</td>
+            <td class="ReportTableValueCell">14</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.083</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">29</td>
+            <td class="ReportTableValueCell">15</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.089</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">31</td>
+            <td class="ReportTableValueCell">16</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.095</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">33</td>
+            <td class="ReportTableValueCell">17</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.1</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">35</td>
+            <td class="ReportTableValueCell">18</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.104</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">37</td>
+            <td class="ReportTableValueCell">19</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-2"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.109</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">39</td>
+            <td class="ReportTableValueCell">20</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">2199-12-31 23:59:59.999</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-2"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.108</td>
+            <td class="ReportTableValueCell">Y</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell">1900-01-01 00:00:00</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 02:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:10.956</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">4</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 03:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "2"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:10.982</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">6</td>
+            <td class="ReportTableValueCell">3</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 04:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.003</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">8</td>
+            <td class="ReportTableValueCell">4</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 05:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.013</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">10</td>
+            <td class="ReportTableValueCell">5</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 06:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.026</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">12</td>
+            <td class="ReportTableValueCell">6</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 07:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.034</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">14</td>
+            <td class="ReportTableValueCell">7</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 08:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.041</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">16</td>
+            <td class="ReportTableValueCell">8</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 09:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.046</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">18</td>
+            <td class="ReportTableValueCell">9</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 10:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "kosie pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.051</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">20</td>
+            <td class="ReportTableValueCell">10</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 11:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.056</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">22</td>
+            <td class="ReportTableValueCell">11</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 12:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.069</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">24</td>
+            <td class="ReportTableValueCell">12</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 13:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.074</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">26</td>
+            <td class="ReportTableValueCell">13</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 14:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.08</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">28</td>
+            <td class="ReportTableValueCell">14</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 15:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.086</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">30</td>
+            <td class="ReportTableValueCell">15</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 16:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.092</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">32</td>
+            <td class="ReportTableValueCell">16</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 17:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.097</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">34</td>
+            <td class="ReportTableValueCell">17</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 18:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.102</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">36</td>
+            <td class="ReportTableValueCell">18</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 19:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-2"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.107</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">38</td>
+            <td class="ReportTableValueCell">19</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 20:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "0"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.111</td>
+            <td class="ReportTableValueCell">N</td>
+          </tr>
+          <tr class="ReportDetailsOddDataRow">
+            <td class="ReportTableValueCell">40</td>
+            <td class="ReportTableValueCell">20</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">2199-12-31 23:59:59.999</td>
+            <td class="ReportTableValueCell">2</td>
+            <td class="ReportTableValueCell">2017-01-26 21:06:05.286109</td>
+            <td class="ReportTableValueCell">{"name": "not piet pompies", "thingthatchange": "-1"}</td>
+            <td class="ReportTableValueCell">2017-01-26 11:05:11.11</td>
+            <td class="ReportTableValueCell">Y</td>
+          </tr>
+          <tr class="ReportDetailsEvenDataRow">
+            <td class="ReportTableValueCell">0</td>
+            <td class="ReportTableValueCell">1</td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+            <td class="ReportTableValueCell"> </td>
+          </tr>
+        </table>
+      </div>
+      <br />
+      <p class="ReportTableInfo">41 rows with 9 columns retrieved.</p>
+      <pre class="ReportSQL">SELECT * FROM jsonb_dim2 ORDER BY id,version;</pre>
+    </div>
+    <div id="ReportFooter">
+Report generated by <a href="http://www.pgadmin.org/">pgAdmin III</a></div>
+    <br />
+  </body>
+</html>
